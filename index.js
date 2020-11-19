@@ -3,7 +3,7 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
-const auth = require('./src/routes/auth');
+const KerasJS = require('keras-js');
 
 
 mongoose
@@ -17,13 +17,32 @@ mongoose
     .catch((err) => console.log(err));
     
 app.use(helmet());
-app.use(bodyParser.json());
-app.use('/auth', auth);
+app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('Hello There!')
-})
+	res.send('Hello There!')
+});
+
+app.post('/', (req, res) => {
+	const data = {
+		location: req.body.location
+	};
+	const model = new KerasJS.Model({
+		filepath: './src/assets/states_covid/india1.h5',
+		filesystem: true
+	  });
+	try {
+		await model.ready();
+		const inputData = {
+		  input_1: new Float32Array(data)
+		};
+		const outputData = await model.predict(inputData);
+		res.send(outputData);
+	} catch (err) {
+		// handle error
+	  }
+});
 
 app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${process.env.PORT}`)
-})
+});
