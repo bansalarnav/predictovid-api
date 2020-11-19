@@ -20,7 +20,7 @@ app.use(helmet());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-	res.send('Hello There!')
+	res.send('Hello There!');
 });
 
 app.post('/', (req, res) => {
@@ -28,7 +28,7 @@ app.post('/', (req, res) => {
 		location: req.body.location
 	};
 	const model = new KerasJS.Model({
-		filepath: './src/assets/states_covid/india1.h5',
+		filepath: './src/states_covid/india1.h5',
 		filesystem: true
 	  });
 	try {
